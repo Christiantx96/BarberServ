@@ -4,11 +4,11 @@ import { supabase } from '../lib/supabase';
 export async function seedInitialData() {
   console.log('Iniciando o Seed de dados iniciais...');
   // 1. Criar Barbeiro Master se não existir
-  let { data: barber } = await supabase.from('barbers').select('*').eq('email', 'admin@barberserv.com').single();
+  let { data: barber } = await supabase.from('barbers').select('*').eq('email', 'c.abiatti@gmail.com').single();
   
   if (!barber) {
     const { data: newBarber, error: errBarber } = await supabase.from('barbers').insert([
-      { name: 'Barbeiro Master', email: 'admin@barberserv.com', phone: '11999999999', status: 'active' }
+      { name: 'Barbeiro Master', email: 'c.abiatti@gmail.com', phone: '11999999999', status: 'active' }
     ]).select().single();
     if (errBarber) console.error('Erro ao criar Barbeiro:', errBarber);
     barber = newBarber;
