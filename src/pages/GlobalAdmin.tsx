@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabaseService } from '../services/supabaseService';
 import { Shop } from '../services/types';
 import { Button } from '../components/ui/Button';
-import { Plus, Building2, Users, CreditCard, ChevronRight } from 'lucide-react';
+import { Plus, Building2, Users, CreditCard, ChevronRight, ShieldCheck } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 
 export function GlobalAdmin() {
@@ -54,6 +54,22 @@ export function GlobalAdmin() {
           Nova Barbearia
         </Button>
       </div>
+
+      {!isLoading && shops.length === 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
+          <div className="h-8 w-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+            <ShieldCheck className="h-4 w-4 text-amber-500" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-sm font-bold text-amber-500">Aviso de Sincronização</h3>
+            <p className="text-xs text-amber-100/70 leading-relaxed">
+              Você está logado como Administrador, mas o banco de dados ainda não retornou nenhuma barbearia. 
+              Isso geralmente acontece quando as <b>políticas de segurança (RLS)</b> do Supabase precisam ser atualizadas.
+              Certifique-se de ter executado o script SQL de migração no seu painel do Supabase.
+            </p>
+          </div>
+        </div>
+      )}
 
       {isCreating && (
         <div className="bg-[#1a1612] border border-amber-500/20 rounded-xl p-6 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">

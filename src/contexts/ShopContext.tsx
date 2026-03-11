@@ -36,11 +36,11 @@ export function ShopProvider({ children }: { children: ReactNode }) {
         const found = fetchedShops.find(s => s.id === savedShopId);
         if (found) {
           setCurrentShop(found);
-        } else if (fetchedShops.length > 0 && user.email !== 'christian.teste2@gmail.com') {
+        } else if (fetchedShops.length > 0 && !user.isPlatformAdmin) {
           setCurrentShop(fetchedShops[0]);
           localStorage.setItem('currentShopId', fetchedShops[0].id);
         }
-      } else if (fetchedShops.length > 0 && user.email !== 'christian.teste2@gmail.com') {
+      } else if (fetchedShops.length > 0 && !user.isPlatformAdmin) {
         setCurrentShop(fetchedShops[0]);
         localStorage.setItem('currentShopId', fetchedShops[0].id);
       }

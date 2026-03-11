@@ -250,6 +250,12 @@ export const supabaseService: ServiceInterface = {
     }]);
     if (memError) throw memError;
 
+    // Create default settings for the new shop
+    await supabase.from('settings').insert([{
+      shop_id: shop.id,
+      barbershop_name: data.name
+    }]);
+
     return { ...shop, createdAt: shop.created_at };
   }
 };
