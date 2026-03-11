@@ -29,7 +29,12 @@ import { RegisterBusiness } from './pages/RegisterBusiness';
 function ProtectedRoute({ children, allowedRoles, requiresPlatformAdmin }: { children: React.ReactNode, allowedRoles?: ('admin' | 'barber' | 'customer')[], requiresPlatformAdmin?: boolean }) {
   const { user, isLoading } = useAuth();
   
-  if (isLoading) return <div className="flex h-screen items-center justify-center bg-[#0e0a06] text-amber-500">Carregando...</div>;
+  if (isLoading) return (
+    <div className="flex flex-col h-screen items-center justify-center bg-[#0e0a06] text-amber-500 gap-2">
+      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500"></div>
+      <div className="text-xs">Autenticando...</div>
+    </div>
+  );
   if (!user) return <Navigate to="/login" replace />;
   
   if (requiresPlatformAdmin && !user.isPlatformAdmin) {
@@ -53,7 +58,15 @@ function RootRedirect() {
   const { currentShop, isLoading: shopLoading } = useShop();
   
   if (authLoading || shopLoading) {
-    return <div className="flex h-screen items-center justify-center bg-[#0e0a06] text-amber-500">Carregando...</div>;
+    return (
+      <div className="flex flex-col h-screen items-center justify-center bg-[#0e0a06] text-amber-500 gap-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+        <div className="text-sm font-medium">Carregando Sistema...</div>
+        <div className="text-[10px] text-amber-500/30">
+          Status: {authLoading ? 'Auth' : ''} {shopLoading ? 'Shop' : ''}
+        </div>
+      </div>
+    );
   }
   
   if (!user) return <Navigate to="/login" replace />;

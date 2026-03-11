@@ -20,13 +20,13 @@ export function ShopProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshShops = async () => {
-    if (!user) {
-      setShops([]);
-      setCurrentShop(null);
-      return;
-    }
-
     try {
+      if (!user) {
+        setShops([]);
+        setCurrentShop(null);
+        return;
+      }
+
       setIsLoading(true);
       const fetchedShops = await supabaseService.getShops();
       setShops(fetchedShops);
