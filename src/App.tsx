@@ -6,7 +6,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ShopProvider } from './contexts/ShopContext';
+import { ShopProvider, useShop } from './contexts/ShopContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { Layout } from './components/Layout';
@@ -43,6 +43,31 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode,
   return <Layout>{children}</Layout>;
 }
 
+function RootRedirect() {
+  const { user, isLoading: authLoading } = useAuth();
+  const { currentShop, isLoading: shopLoading } = useShop();
+  
+  if (authLoading || shopLoading) {
+    return <div className="flex h-screen items-center justify-center bg-[#0e0a06] text-amber-500">Carregando...</div>;
+  }
+  
+  if (!user) return <Navigate to="/login" replace />;
+
+  // Special case for Super Admin
+  if (user.email === 'christian.teste2@gmail.com') {
+    if (!currentShop) {
+      return <Navigate to="/admin/global" replace />;
+    }
+  }
+
+  // Regular role-based redirect
+  if (user.role === 'customer') {
+    return <Navigate to="/cliente/agendamentos" replace />;
+  }
+  
+  return <Navigate to="/dashboard" replace />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -53,12 +78,7 @@ export default function App() {
               <Routes>
                 <Route path="/login" element={<Login />} />
                 
-                {/* Root redirect based on role */}
-                <Route path="/" element={
-                  <ProtectedRoute allowedRoles={['admin', 'barber']}>
-                    <Navigate to="/dashboard" replace />
-                  </ProtectedRoute>
-                } />
+                <Route path="/" element={<RootRedirect />} />
                 
                 {/* Customer Routes */}
                 <Route path="/cliente/agendamentos" element={

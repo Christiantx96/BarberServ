@@ -42,11 +42,20 @@ export function Layout({ children }: { children: ReactNode }) {
     { path: '/perfil', label: 'Meu Perfil', icon: Settings },
   ];
 
-  const navItems = user?.role === 'customer' ? customerNavItems : adminNavItems;
-
-  // Add Global Admin link ONLY for the SaaS Owner
+  // Calculate navigation items based on role and shop context
+  let navItems = user?.role === 'customer' ? [...customerNavItems] : [...adminNavItems];
+  
   if (user?.email === 'christian.teste2@gmail.com') {
-    navItems.push({ path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck });
+    if (!currentShop) {
+      // If no shop is selected, only show global admin and profile
+      navItems = [
+        { path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck },
+        { path: '/perfil', label: 'Meu Perfil', icon: Settings },
+      ];
+    } else {
+      // If a shop IS selected, show everything + global admin
+      navItems.push({ path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck });
+    }
   }
 
   const toggleFullScreen = () => {
@@ -87,12 +96,13 @@ export function Layout({ children }: { children: ReactNode }) {
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/20">
                   <Scissors className="h-4 w-4" />
                 </div>
-                {shops.length > 1 ? (
+                {shops.length > 0 ? (
                   <select 
                     value={currentShop?.id || ''} 
                     onChange={(e) => selectShop(e.target.value)}
                     className="bg-transparent border-none text-amber-400 font-bold text-sm focus:ring-0 cursor-pointer"
                   >
+                    {!currentShop && <option value="" disabled className="bg-[#120e0a]">Selecionar Unidade...</option>}
                     {shops.map(shop => (
                       <option key={shop.id} value={shop.id} className="bg-[#120e0a] text-amber-100">
                         {shop.name}
@@ -100,7 +110,7 @@ export function Layout({ children }: { children: ReactNode }) {
                     ))}
                   </select>
                 ) : (
-                  <span className="font-bold text-amber-400">{currentShop?.name || settings?.barbershop_name || 'BarberServ'}</span>
+                  <span className="font-bold text-amber-400">SaaS Admin</span>
                 )}
               </div>
             </div>
