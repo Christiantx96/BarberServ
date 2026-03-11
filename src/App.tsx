@@ -6,6 +6,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ShopProvider } from './contexts/ShopContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { Layout } from './components/Layout';
@@ -44,42 +45,44 @@ function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode,
 export default function App() {
   return (
     <AuthProvider>
-      <SettingsProvider>
-        <ToastProvider>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              
-              {/* Root redirect based on role */}
-              <Route path="/" element={
-                <ProtectedRoute allowedRoles={['admin', 'barber']}>
-                  <Navigate to="/dashboard" replace />
-                </ProtectedRoute>
-              } />
-              
-              {/* Customer Routes */}
-              <Route path="/cliente/agendamentos" element={
-                <ProtectedRoute allowedRoles={['customer']}>
-                  <CustomerAppointments />
-                </ProtectedRoute>
-              } />
+      <ShopProvider>
+        <SettingsProvider>
+          <ToastProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                
+                {/* Root redirect based on role */}
+                <Route path="/" element={
+                  <ProtectedRoute allowedRoles={['admin', 'barber']}>
+                    <Navigate to="/dashboard" replace />
+                  </ProtectedRoute>
+                } />
+                
+                {/* Customer Routes */}
+                <Route path="/cliente/agendamentos" element={
+                  <ProtectedRoute allowedRoles={['customer']}>
+                    <CustomerAppointments />
+                  </ProtectedRoute>
+                } />
 
-              {/* Admin/Barber Routes */}
-              <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Dashboard /></ProtectedRoute>} />
-              <Route path="/agendamentos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Appointments /></ProtectedRoute>} />
-              <Route path="/financeiro" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Payments /></ProtectedRoute>} />
-              <Route path="/barbeiros" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Barbers /></ProtectedRoute>} />
-              <Route path="/clientes" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Customers /></ProtectedRoute>} />
-              <Route path="/servicos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Services /></ProtectedRoute>} />
-              <Route path="/produtos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Products /></ProtectedRoute>} />
-              <Route path="/expedientes" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Schedules /></ProtectedRoute>} />
-              <Route path="/assinaturas" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Subscriptions /></ProtectedRoute>} />
-              <Route path="/planos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Plans /></ProtectedRoute>} />
-              <Route path="/perfil" element={<ProtectedRoute allowedRoles={['admin', 'barber', 'customer']}><Profile /></ProtectedRoute>} />
-            </Routes>
-          </Router>
-        </ToastProvider>
-      </SettingsProvider>
+                {/* Admin/Barber Routes */}
+                <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Dashboard /></ProtectedRoute>} />
+                <Route path="/agendamentos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Appointments /></ProtectedRoute>} />
+                <Route path="/financeiro" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Payments /></ProtectedRoute>} />
+                <Route path="/barbeiros" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Barbers /></ProtectedRoute>} />
+                <Route path="/clientes" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Customers /></ProtectedRoute>} />
+                <Route path="/servicos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Services /></ProtectedRoute>} />
+                <Route path="/produtos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Products /></ProtectedRoute>} />
+                <Route path="/expedientes" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Schedules /></ProtectedRoute>} />
+                <Route path="/assinaturas" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Subscriptions /></ProtectedRoute>} />
+                <Route path="/planos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Plans /></ProtectedRoute>} />
+                <Route path="/perfil" element={<ProtectedRoute allowedRoles={['admin', 'barber', 'customer']}><Profile /></ProtectedRoute>} />
+              </Routes>
+            </Router>
+          </ToastProvider>
+        </SettingsProvider>
+      </ShopProvider>
     </AuthProvider>
   );
 }

@@ -10,11 +10,11 @@ export const supabaseService: ServiceInterface = {
   async getCustomers(): Promise<Customer[]> {
     const { data, error } = await supabase.from('customers').select('*');
     if (error) throw error;
-    // Map created_at to createdAt
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createCustomer(data: Omit<Customer, 'id' | 'createdAt'>): Promise<Customer> {
-    const { data: result, error } = await supabase.from('customers').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('customers').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -35,7 +35,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createPlan(data: Omit<Plan, 'id' | 'createdAt'>): Promise<Plan> {
-    const { data: result, error } = await supabase.from('plans').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('plans').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -56,7 +57,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createSubscription(data: Omit<Subscription, 'id' | 'createdAt'>): Promise<Subscription> {
-    const { data: result, error } = await supabase.from('subscriptions').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('subscriptions').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -77,7 +79,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createPayment(data: Omit<Payment, 'id' | 'createdAt'>): Promise<Payment> {
-    const { data: result, error } = await supabase.from('payments').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('payments').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -94,7 +97,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createBarber(data: Omit<Barber, 'id' | 'createdAt'>): Promise<Barber> {
-    const { data: result, error } = await supabase.from('barbers').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('barbers').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -115,7 +119,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createService(data: Omit<Service, 'id' | 'createdAt'>): Promise<Service> {
-    const { data: result, error } = await supabase.from('services').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('services').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -136,7 +141,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createProduct(data: Omit<Product, 'id' | 'createdAt'>): Promise<Product> {
-    const { data: result, error } = await supabase.from('products').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('products').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -157,7 +163,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createAppointment(data: Omit<Appointment, 'id' | 'createdAt'>): Promise<Appointment> {
-    const { data: result, error } = await supabase.from('appointments').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('appointments').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -178,7 +185,8 @@ export const supabaseService: ServiceInterface = {
     return data.map(d => ({...d, createdAt: d.created_at}));
   },
   async createSchedule(data: Omit<Schedule, 'id' | 'createdAt'>): Promise<Schedule> {
-    const { data: result, error } = await supabase.from('schedules').insert([data]).select().single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('schedules').insert([{ ...data, shop_id: data.shop_id || shopId }]).select().single();
     if (error) throw error;
     return { ...result, createdAt: result.created_at };
   },
@@ -199,20 +207,49 @@ export const supabaseService: ServiceInterface = {
   },
 
   async getSettings() {
-    const { data, error } = await supabase.from('settings').select('*').single();
+    const shopId = localStorage.getItem('currentShopId');
+    const { data, error } = await supabase.from('settings').select('*').eq('shop_id', shopId).single();
     if (error) throw error;
     return data;
   },
 
   async updateSettings(data: any) {
-    const { data: result, error } = await supabase.from('settings').update(data).match({ id: data.id || undefined }).select().single();
-    if (!result && !error) {
-       // Fallback for case without ID (getting the first record)
-       const { data: fallback, error: fallbackError } = await supabase.from('settings').update(data).neq('id', '00000000-0000-0000-0000-000000000000').select().single();
-       if (fallbackError) throw fallbackError;
-       return fallback;
-    }
+    const shopId = localStorage.getItem('currentShopId');
+    const { data: result, error } = await supabase.from('settings').update(data).match({ shop_id: shopId }).select().single();
     if (error) throw error;
     return result;
+  },
+
+  // SaaS / Multi-tenant
+  async getShops(): Promise<any[]> {
+    const { data, error } = await supabase.from('shops').select('*');
+    if (error) throw error;
+    return data.map(d => ({...d, createdAt: d.created_at}));
+  },
+
+  async getCurrentShop(): Promise<any | null> {
+    const shopId = localStorage.getItem('currentShopId');
+    if (!shopId) return null;
+    const { data, error } = await supabase.from('shops').select('*').eq('id', shopId).single();
+    if (error) return null;
+    return { ...data, createdAt: data.created_at };
+  },
+
+  async createShop(data: { name: string, slug: string }): Promise<any> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const { data: shop, error: shopError } = await supabase.from('shops').insert([data]).select().single();
+    if (shopError) throw shopError;
+
+    // Link user to shop as owner
+    const { error: memError } = await supabase.from('memberships').insert([{
+      user_id: user.id,
+      shop_id: shop.id,
+      role: 'owner'
+    }]);
+    if (memError) throw memError;
+
+    return { ...shop, createdAt: shop.created_at };
   }
 };

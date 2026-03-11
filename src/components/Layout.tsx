@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useShop } from '../contexts/ShopContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { 
   LayoutDashboard, Users, Calendar, CreditCard, Settings, 
@@ -11,6 +12,7 @@ import { cn } from './ui/Button';
 
 export function Layout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
+  const { shops, currentShop, selectShop } = useShop();
   const { settings } = useSettings();
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,7 +82,21 @@ export function Layout({ children }: { children: ReactNode }) {
                 <div className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-amber-500 to-amber-400 text-black shadow-lg shadow-amber-500/20">
                   <Scissors className="h-4 w-4" />
                 </div>
-                <span className="font-bold text-amber-400 md:hidden">{settings?.barbershop_name || 'BarberServ'}</span>
+                {shops.length > 1 ? (
+                  <select 
+                    value={currentShop?.id || ''} 
+                    onChange={(e) => selectShop(e.target.value)}
+                    className="bg-transparent border-none text-amber-400 font-bold text-sm focus:ring-0 cursor-pointer"
+                  >
+                    {shops.map(shop => (
+                      <option key={shop.id} value={shop.id} className="bg-[#120e0a] text-amber-100">
+                        {shop.name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span className="font-bold text-amber-400">{currentShop?.name || settings?.barbershop_name || 'BarberServ'}</span>
+                )}
               </div>
             </div>
 

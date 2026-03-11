@@ -5,6 +5,23 @@ export interface Customer {
   status: 'active' | 'inactive';
   notes: string;
   createdAt: string;
+  shop_id: string;
+}
+
+export interface Shop {
+  id: string;
+  name: string;
+  slug: string;
+  subscription_status: 'trial' | 'active' | 'past_due' | 'canceled';
+  createdAt: string;
+}
+
+export interface Membership {
+  id: string;
+  user_id: string;
+  shop_id: string;
+  role: 'owner' | 'admin' | 'staff';
+  createdAt: string;
 }
 
 export interface Plan {
@@ -13,6 +30,7 @@ export interface Plan {
   price: number;
   active: boolean;
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Subscription {
@@ -23,6 +41,7 @@ export interface Subscription {
   next_renewal: string;
   status: 'active' | 'expired' | 'canceled';
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Payment {
@@ -33,6 +52,7 @@ export interface Payment {
   amount: number;
   paid_at: string;
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Barber {
@@ -42,6 +62,7 @@ export interface Barber {
   phone: string;
   status: 'active' | 'inactive';
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Service {
@@ -51,6 +72,7 @@ export interface Service {
   price: number;
   active: boolean;
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Product {
@@ -60,6 +82,7 @@ export interface Product {
   stock: number;
   active: boolean;
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Appointment {
@@ -71,6 +94,7 @@ export interface Appointment {
   time: string;
   status: 'pending' | 'confirmed' | 'canceled' | 'completed' | 'blocked';
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Schedule {
@@ -81,6 +105,7 @@ export interface Schedule {
   end_time: string;
   is_active: boolean;
   createdAt: string;
+  shop_id: string;
 }
 
 export interface Review {
@@ -151,6 +176,11 @@ export interface ServiceInterface {
   // Settings
   getSettings(): Promise<BarbershopSettings>;
   updateSettings(data: Partial<BarbershopSettings>): Promise<BarbershopSettings>;
+
+  // SaaS / Multi-tenant
+  getShops(): Promise<Shop[]>;
+  getCurrentShop(): Promise<Shop | null>;
+  createShop(data: { name: string, slug: string }): Promise<Shop>;
 }
 
 export interface BarbershopSettings {
