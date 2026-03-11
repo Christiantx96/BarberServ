@@ -55,7 +55,7 @@ function RootRedirect() {
   if (!user) return <Navigate to="/login" replace />;
 
   // Special case for Super Admin
-  if (user.isPlatformAdmin) {
+  if (user?.isPlatformAdmin) {
     if (!currentShop) {
       return <Navigate to="/admin/global" replace />;
     }

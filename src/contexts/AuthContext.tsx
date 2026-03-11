@@ -37,19 +37,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else if (session?.user) {
           const userMeta = session.user.user_metadata;
           
-          // Check if user is platform admin
-          const { data: adminData } = await supabase
-            .from('platform_admins')
-            .select('user_id')
-            .eq('user_id', session.user.id)
-            .single();
+          // Check if user is platform admin - wrapped in try/catch to avoid breaking boot if table missing
+          let isPlatformAdmin = false;
+          try {
+            const { data: adminData } = await supabase
+              .from('platform_admins')
+              .select('user_id')
+              .eq('user_id', session.user.id)
+              .single();
+            isPlatformAdmin = !!adminData;
+          } catch (e) {
+            console.warn("Platform admins table check skipped/failed:", e);
+          }
 
           setUser({
             id: session.user.id,
             email: session.user.email || '',
             name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
             role: userMeta?.role || 'customer',
-            isPlatformAdmin: !!adminData
+            isPlatformAdmin
           });
         }
       } catch (err) {
