@@ -26,12 +26,16 @@ import { Profile } from './pages/Profile';
 import { GlobalAdmin } from './pages/GlobalAdmin';
 import { RegisterBusiness } from './pages/RegisterBusiness';
 
-function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: ('admin' | 'barber' | 'customer')[] }) {
+function ProtectedRoute({ children, allowedRoles, requiresPlatformAdmin }: { children: React.ReactNode, allowedRoles?: ('admin' | 'barber' | 'customer')[], requiresPlatformAdmin?: boolean }) {
   const { user, isLoading } = useAuth();
   
   if (isLoading) return <div className="flex h-screen items-center justify-center bg-[#0e0a06] text-amber-500">Carregando...</div>;
   if (!user) return <Navigate to="/login" replace />;
   
+  if (requiresPlatformAdmin && !user.isPlatformAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Redirect based on role if they try to access an unauthorized page
     if (user.role === 'customer') {
@@ -103,7 +107,7 @@ export default function App() {
                 
                 {/* Global Admin Route */}
                 <Route path="/admin/global" element={
-                  <ProtectedRoute allowedRoles={['admin']}>
+                  <ProtectedRoute requiresPlatformAdmin={true}>
                     <GlobalAdmin />
                   </ProtectedRoute>
                 } />

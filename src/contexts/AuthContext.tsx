@@ -87,6 +87,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: userMeta?.role || 'customer',
                 isPlatformAdmin: !!adminData
               });
+            })
+            .catch(e => {
+              console.warn("Auth change platform admin check failed:", e);
+              setUser({
+                id: session.user.id,
+                email: session.user.email || '',
+                name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
+                role: userMeta?.role || 'customer',
+                isPlatformAdmin: false
+              });
             });
         } else {
           setUser(null);
