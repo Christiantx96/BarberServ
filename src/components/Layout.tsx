@@ -46,16 +46,11 @@ export function Layout({ children }: { children: ReactNode }) {
   let navItems = user?.role === 'customer' ? [...customerNavItems] : [...adminNavItems];
   
   if (user?.isPlatformAdmin) {
-    if (!currentShop) {
-      // If no shop is selected, only show global admin and profile
-      navItems = [
-        { path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck },
-        { path: '/perfil', label: 'Meu Perfil', icon: Settings },
-      ];
-    } else {
-      // If a shop IS selected, show everything + global admin
-      navItems.push({ path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck });
-    }
+    // Super Admins only see Global Management and Profile, keeping the UI clean
+    navItems = [
+      { path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck },
+      { path: '/perfil', label: 'Meu Perfil', icon: Settings },
+    ];
   }
 
   const toggleFullScreen = () => {
