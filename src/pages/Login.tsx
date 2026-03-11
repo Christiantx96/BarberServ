@@ -24,7 +24,9 @@ export function Login() {
   // If user is already logged in, redirect them
   React.useEffect(() => {
     if (user) {
-      if (user.role === 'customer') {
+      if (user.isPlatformAdmin) {
+        navigate('/admin/global');
+      } else if (user.role === 'customer') {
         navigate('/cliente/agendamentos');
       } else {
         navigate('/dashboard');

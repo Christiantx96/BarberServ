@@ -71,11 +71,9 @@ function RootRedirect() {
   
   if (!user) return <Navigate to="/login" replace />;
 
-  // Special case for Super Admin
+  // Special case for Super Admin - Always prioritize Global View
   if (user?.isPlatformAdmin) {
-    if (!currentShop) {
-      return <Navigate to="/admin/global" replace />;
-    }
+    return <Navigate to="/admin/global" replace />;
   }
 
   // Regular role-based redirect

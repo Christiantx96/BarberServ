@@ -118,8 +118,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     if (error) throw error;
     
-    // Check if the user trying to login respects the selected role toggle
+    // Check if the user trying to login is a platform admin or respects the selected role toggle
     if (session?.user) {
+      // 1. Check if user is platform admin (bypasses all other checks)
+      const { data: adminData } = await supabase
+        .from('platform_admins')
+        .select('user_id')
+        .eq('user_id', session.user.id)
+        .single();
+      
+      if (adminData) return; // Super admin can access anything
+
+      // 2. Regular role check
       const userMeta = session.user.user_metadata;
       const userRole = userMeta?.role || 'customer';
       
