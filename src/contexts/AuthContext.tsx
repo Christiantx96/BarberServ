@@ -2,6 +2,9 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 import { supabase } from '../lib/supabase';
 import { User as SupabaseUser } from '@supabase/supabase-js';
 
+// Hardcoded developer emails for immediate access unblocking
+const DEVELOPER_EMAILS = ['christian.teste2@gmail.com', 'christian.teste1@gmail.com', 'c.abiatti@gmail.com'];
+
 // Extend the Supabase User to include our custom meta attributes internally
 export interface User {
   id: string;
@@ -55,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             email: session.user.email || '',
             name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
             role: userMeta?.role || 'customer',
-            isPlatformAdmin
+            isPlatformAdmin: isPlatformAdmin || DEVELOPER_EMAILS.includes(session.user.email || '')
           });
         }
       } catch (err) {
@@ -80,12 +83,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .eq('user_id', session.user.id)
             .single()
             .then(({ data: adminData }) => {
+              const isAdmin = !!adminData || DEVELOPER_EMAILS.includes(session.user.email || '');
               setUser({
                 id: session.user.id,
                 email: session.user.email || '',
                 name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
                 role: userMeta?.role || 'customer',
-                isPlatformAdmin: !!adminData
+                isPlatformAdmin: isAdmin
               });
             })
             .catch(e => {
@@ -120,14 +124,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     // Check if the user trying to login is a platform admin or respects the selected role toggle
     if (session?.user) {
-      // 1. Check if user is platform admin (bypasses all other checks)
       const { data: adminData } = await supabase
         .from('platform_admins')
         .select('user_id')
         .eq('user_id', session.user.id)
         .single();
       
-      if (adminData) return; // Super admin can access anything
+      const isDeveloper = adminData || ['christian.teste2@gmail.com', 'christian.teste1@gmail.com', 'c.abiatti@gmail.com'].includes(session.user.email || '');
+      
+      if (isDeveloper) return; // Super admin can access anything
 
       // 2. Regular role check
       const userMeta = session.user.user_metadata;
