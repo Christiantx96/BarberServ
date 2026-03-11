@@ -45,7 +45,7 @@ export function Layout({ children }: { children: ReactNode }) {
   const navItems = user?.role === 'customer' ? customerNavItems : adminNavItems;
 
   // Add Global Admin link ONLY for the SaaS Owner
-  if (user?.email === 'christian.teste1@gmail.com') {
+  if (user?.email === 'christian.teste2@gmail.com') {
     navItems.push({ path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck });
   }
 
