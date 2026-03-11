@@ -41,6 +41,9 @@ function ProtectedRoute({ children, allowedRoles, requiresPlatformAdmin }: { chi
     return <Navigate to="/" replace />;
   }
 
+  // FORCE: If platform admin is on a shop route, redirect to global (unless they intentionally selected a shop)
+  // For now, let's just make sure they always prioritize Global Admin if they hit the Root
+  
   if (allowedRoles && !allowedRoles.includes(user.role)) {
     // Redirect based on role if they try to access an unauthorized page
     if (user.role === 'customer') {

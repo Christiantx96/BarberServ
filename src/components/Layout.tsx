@@ -125,7 +125,19 @@ export function Layout({ children }: { children: ReactNode }) {
               </button>
               <div className="hidden md:flex items-center gap-2 pl-2 border-l border-amber-500/10">
                 <div className="flex flex-col items-end">
-                  <span className="text-xs font-medium text-amber-50">{user?.name}</span>
+                  <div className="flex items-center gap-1.5">
+                    {user?.isPlatformAdmin && (
+                      <span className="text-[9px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded border border-red-500/20 font-bold uppercase tracking-tighter">
+                        Platform Admin
+                      </span>
+                    )}
+                    {user?.role === 'admin' && !user?.isPlatformAdmin && (
+                      <span className="text-[9px] bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded border border-amber-500/20 font-bold uppercase tracking-tighter">
+                        Shop Owner
+                      </span>
+                    )}
+                    <span className="text-xs font-medium text-amber-50">{user?.name}</span>
+                  </div>
                   <button onClick={handleLogout} className="text-[10px] text-red-400 hover:text-red-300">Sair</button>
                 </div>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-amber-400 text-xs font-bold text-black">
