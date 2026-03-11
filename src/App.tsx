@@ -23,6 +23,7 @@ import { Appointments } from './pages/Appointments';
 import { Schedules } from './pages/Schedules';
 import { CustomerAppointments } from './pages/CustomerAppointments';
 import { Profile } from './pages/Profile';
+import { GlobalAdmin } from './pages/GlobalAdmin';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: ('admin' | 'barber' | 'customer')[] }) {
   const { user, isLoading } = useAuth();
@@ -78,6 +79,13 @@ export default function App() {
                 <Route path="/assinaturas" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Subscriptions /></ProtectedRoute>} />
                 <Route path="/planos" element={<ProtectedRoute allowedRoles={['admin', 'barber']}><Plans /></ProtectedRoute>} />
                 <Route path="/perfil" element={<ProtectedRoute allowedRoles={['admin', 'barber', 'customer']}><Profile /></ProtectedRoute>} />
+                
+                {/* Global Admin Route */}
+                <Route path="/admin/global" element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <GlobalAdmin />
+                  </ProtectedRoute>
+                } />
               </Routes>
             </Router>
           </ToastProvider>

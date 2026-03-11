@@ -6,7 +6,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { 
   LayoutDashboard, Users, Calendar, CreditCard, Settings, 
   LogOut, Menu, X, Scissors, Bell, ShoppingBag, 
-  Clock, Package, Star
+  Clock, Package, Star, ShieldCheck
 } from 'lucide-react';
 import { cn } from './ui/Button';
 
@@ -43,6 +43,11 @@ export function Layout({ children }: { children: ReactNode }) {
   ];
 
   const navItems = user?.role === 'customer' ? customerNavItems : adminNavItems;
+
+  // Add Global Admin link ONLY for the SaaS Owner
+  if (user?.email === 'christian.teste1@gmail.com') {
+    navItems.push({ path: '/admin/global', label: 'Gestão Global (SaaS)', icon: ShieldCheck });
+  }
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
