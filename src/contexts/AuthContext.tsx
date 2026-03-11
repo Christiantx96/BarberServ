@@ -8,6 +8,7 @@ export interface User {
   name: string;
   email: string;
   role: 'admin' | 'barber' | 'customer';
+  isPlatformAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -35,12 +36,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null);
         } else if (session?.user) {
           const userMeta = session.user.user_metadata;
+          
+          // Check if user is platform admin
+          const { data: adminData } = await supabase
+            .from('platform_admins')
+            .select('user_id')
+            .eq('user_id', session.user.id)
+            .single();
+
           setUser({
             id: session.user.id,
             email: session.user.email || '',
             name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
-            // Defaulting to customer if no role is defined in metadata
-            role: userMeta?.role || 'customer'
+            role: userMeta?.role || 'customer',
+            isPlatformAdmin: !!adminData
           });
         }
       } catch (err) {
@@ -57,12 +66,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (_event, session) => {
         if (session?.user) {
           const userMeta = session.user.user_metadata;
-          setUser({
-            id: session.user.id,
-            email: session.user.email || '',
-            name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
-            role: userMeta?.role || 'customer'
-          });
+          // Note: for simpler code we don't await here but we could
+          // In practice, the checkSession handles the initial load and updates
+          supabase
+            .from('platform_admins')
+            .select('user_id')
+            .eq('user_id', session.user.id)
+            .single()
+            .then(({ data: adminData }) => {
+              setUser({
+                id: session.user.id,
+                email: session.user.email || '',
+                name: userMeta?.name || session.user.email?.split('@')[0] || 'Usuário',
+                role: userMeta?.role || 'customer',
+                isPlatformAdmin: !!adminData
+              });
+            });
         } else {
           setUser(null);
         }

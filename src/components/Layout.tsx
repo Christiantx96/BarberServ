@@ -45,7 +45,7 @@ export function Layout({ children }: { children: ReactNode }) {
   // Calculate navigation items based on role and shop context
   let navItems = user?.role === 'customer' ? [...customerNavItems] : [...adminNavItems];
   
-  if (user?.email === 'christian.teste2@gmail.com') {
+  if (user?.isPlatformAdmin) {
     if (!currentShop) {
       // If no shop is selected, only show global admin and profile
       navItems = [

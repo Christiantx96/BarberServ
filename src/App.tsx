@@ -24,6 +24,7 @@ import { Schedules } from './pages/Schedules';
 import { CustomerAppointments } from './pages/CustomerAppointments';
 import { Profile } from './pages/Profile';
 import { GlobalAdmin } from './pages/GlobalAdmin';
+import { RegisterBusiness } from './pages/RegisterBusiness';
 
 function ProtectedRoute({ children, allowedRoles }: { children: React.ReactNode, allowedRoles?: ('admin' | 'barber' | 'customer')[] }) {
   const { user, isLoading } = useAuth();
@@ -54,7 +55,7 @@ function RootRedirect() {
   if (!user) return <Navigate to="/login" replace />;
 
   // Special case for Super Admin
-  if (user.email === 'christian.teste2@gmail.com') {
+  if (user.isPlatformAdmin) {
     if (!currentShop) {
       return <Navigate to="/admin/global" replace />;
     }
@@ -106,6 +107,9 @@ export default function App() {
                     <GlobalAdmin />
                   </ProtectedRoute>
                 } />
+
+                {/* Public SaaS Routes */}
+                <Route path="/registrar-barbearia" element={<RegisterBusiness />} />
               </Routes>
             </Router>
           </ToastProvider>

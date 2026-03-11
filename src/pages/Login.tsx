@@ -156,6 +156,14 @@ export function Login() {
           >
             {isRegistering ? 'Já tenho uma conta. Fazer login.' : 'Não tem conta? Cadastre-se como cliente.'}
           </button>
+          
+          {!isRegistering && (
+            <div className="mt-4 pt-4 border-t border-amber-500/5">
+              <Link to="/registrar-barbearia" className="text-xs text-emerald-500 hover:text-emerald-400 font-medium">
+                Quero registrar minha barbearia →
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
